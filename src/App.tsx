@@ -58,6 +58,8 @@ type GitHubEvent = {
 
 const WEEKS_TO_DISPLAY = 52;
 const DAYS_TO_DISPLAY = WEEKS_TO_DISPLAY * 7;
+const RECENT_PUSHES_DAYS_WINDOW = 365;
+const EVENTS_PAGES_TO_FETCH = 3;
 
 const emptyDays = () => Array.from({ length: DAYS_TO_DISPLAY }, () => 0);
 
@@ -113,6 +115,35 @@ const getRecentPushes = (events: GitHubEvent[], daysWindow = 90) => {
   }, 0);
 };
 
+const fetchUserEvents = async (
+  username: string,
+  headers: HeadersInit,
+  signal: AbortSignal,
+  maxPages = EVENTS_PAGES_TO_FETCH
+) => {
+  const allEvents: GitHubEvent[] = [];
+
+  for (let page = 1; page <= maxPages; page += 1) {
+    const eventsRes = await fetch(
+      `https://api.github.com/users/${username}/events/public?per_page=100&page=${page}`,
+      { headers, signal }
+    );
+
+    if (!eventsRes.ok) {
+      throw new Error('Failed to fetch GitHub events');
+    }
+
+    const pageEvents = (await eventsRes.json()) as GitHubEvent[];
+    if (pageEvents.length === 0) break;
+
+    allEvents.push(...pageEvents);
+
+    if (pageEvents.length < 100) break;
+  }
+
+  return allEvents;
+};
+
 const useGithubStats = (username: string) => {
   const [days, setDays] = useState<number[]>(() => emptyDays());
   const [topRepos, setTopRepos] = useState<GitHubRepo[]>([]);
@@ -133,19 +164,18 @@ const useGithubStats = (username: string) => {
           Accept: 'application/vnd.github+json'
         };
 
-        const [userRes, reposRes, eventsRes] = await Promise.all([
+        const [userRes, reposRes, events] = await Promise.all([
           fetch(`https://api.github.com/users/${username}`, { headers, signal: controller.signal }),
           fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, { headers, signal: controller.signal }),
-          fetch(`https://api.github.com/users/${username}/events/public?per_page=100`, { headers, signal: controller.signal })
+          fetchUserEvents(username, headers, controller.signal)
         ]);
 
-        if (!userRes.ok || !reposRes.ok || !eventsRes.ok) {
+        if (!userRes.ok || !reposRes.ok) {
           throw new Error('Failed to fetch GitHub stats');
         }
 
         const user = (await userRes.json()) as GitHubUser;
         const repos = (await reposRes.json()) as GitHubRepo[];
-        const events = (await eventsRes.json()) as GitHubEvent[];
 
         const rankedRepos = repos
           .filter((repo) => !repo.fork)
@@ -160,7 +190,7 @@ const useGithubStats = (username: string) => {
         setRepoCount(user.public_repos);
         setTopRepos(rankedRepos);
         setDays(buildContributionLevels(events));
-        setRecentPushes(getRecentPushes(events));
+        setRecentPushes(getRecentPushes(events, RECENT_PUSHES_DAYS_WINDOW));
       } catch (err) {
         if (controller.signal.aborted) return;
         setError(err instanceof Error ? err.message : 'Unknown error while loading GitHub stats');
@@ -1016,7 +1046,7 @@ export default function App() {
               </div>
               <div>
                 <div className="text-3xl font-bold">{github.loading ? '...' : github.recentPushes}</div>
-                <div className="text-xs font-mono text-slate-400 uppercase tracking-widest">Recent Pushes (90d)</div>
+                <div className="text-xs font-mono text-slate-400 uppercase tracking-widest">Recent Pushes (365d)</div>
               </div>
             </div>
           </div>
