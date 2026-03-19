@@ -34,6 +34,162 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+type GitHubRepo = {
+  id: number;
+  name: string;
+  html_url: string;
+  language: string | null;
+  stargazers_count: number;
+  pushed_at: string;
+  fork: boolean;
+};
+
+type GitHubUser = {
+  public_repos: number;
+};
+
+type GitHubEvent = {
+  type: string;
+  created_at: string;
+  payload?: {
+    commits?: Array<unknown>;
+  };
+};
+
+const WEEKS_TO_DISPLAY = 52;
+const DAYS_TO_DISPLAY = WEEKS_TO_DISPLAY * 7;
+
+const emptyDays = () => Array.from({ length: DAYS_TO_DISPLAY }, () => 0);
+
+const buildContributionLevels = (events: GitHubEvent[]) => {
+  const dailyCommitCounts = Array.from({ length: DAYS_TO_DISPLAY }, () => 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  events.forEach((event) => {
+    if (event.type !== 'PushEvent') return;
+
+    const eventDate = new Date(event.created_at);
+    eventDate.setHours(0, 0, 0, 0);
+
+    const daysAgo = Math.floor((today.getTime() - eventDate.getTime()) / 86_400_000);
+    if (daysAgo < 0 || daysAgo >= DAYS_TO_DISPLAY) return;
+
+    const index = DAYS_TO_DISPLAY - 1 - daysAgo;
+    const commitsCount = Array.isArray(event.payload?.commits) ? event.payload.commits.length : 1;
+    dailyCommitCounts[index] += Math.max(1, commitsCount);
+  });
+
+  const nonZeroCounts = dailyCommitCounts.filter((count) => count > 0).sort((a, b) => a - b);
+  if (nonZeroCounts.length === 0) {
+    return dailyCommitCounts;
+  }
+
+  const q1 = nonZeroCounts[Math.floor(nonZeroCounts.length * 0.25)] ?? 1;
+  const q2 = nonZeroCounts[Math.floor(nonZeroCounts.length * 0.5)] ?? q1;
+  const q3 = nonZeroCounts[Math.floor(nonZeroCounts.length * 0.75)] ?? q2;
+
+  return dailyCommitCounts.map((count) => {
+    if (count === 0) return 0;
+    if (count <= q1) return 1;
+    if (count <= q2) return 2;
+    if (count <= q3) return 3;
+    return 4;
+  });
+};
+
+const getRecentPushes = (events: GitHubEvent[], daysWindow = 90) => {
+  const now = Date.now();
+  const maxAgeMs = daysWindow * 86_400_000;
+
+  return events.reduce((sum, event) => {
+    if (event.type !== 'PushEvent') return sum;
+
+    const ageMs = now - new Date(event.created_at).getTime();
+    if (ageMs < 0 || ageMs > maxAgeMs) return sum;
+
+    const commitsCount = Array.isArray(event.payload?.commits) ? event.payload.commits.length : 1;
+    return sum + Math.max(1, commitsCount);
+  }, 0);
+};
+
+const useGithubStats = (username: string) => {
+  const [days, setDays] = useState<number[]>(() => emptyDays());
+  const [topRepos, setTopRepos] = useState<GitHubRepo[]>([]);
+  const [repoCount, setRepoCount] = useState(0);
+  const [recentPushes, setRecentPushes] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const headers = {
+          Accept: 'application/vnd.github+json'
+        };
+
+        const [userRes, reposRes, eventsRes] = await Promise.all([
+          fetch(`https://api.github.com/users/${username}`, { headers, signal: controller.signal }),
+          fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, { headers, signal: controller.signal }),
+          fetch(`https://api.github.com/users/${username}/events/public?per_page=100`, { headers, signal: controller.signal })
+        ]);
+
+        if (!userRes.ok || !reposRes.ok || !eventsRes.ok) {
+          throw new Error('Failed to fetch GitHub stats');
+        }
+
+        const user = (await userRes.json()) as GitHubUser;
+        const repos = (await reposRes.json()) as GitHubRepo[];
+        const events = (await eventsRes.json()) as GitHubEvent[];
+
+        const rankedRepos = repos
+          .filter((repo) => !repo.fork)
+          .sort((a, b) => {
+            if (b.stargazers_count !== a.stargazers_count) {
+              return b.stargazers_count - a.stargazers_count;
+            }
+            return new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime();
+          })
+          .slice(0, 2);
+
+        setRepoCount(user.public_repos);
+        setTopRepos(rankedRepos);
+        setDays(buildContributionLevels(events));
+        setRecentPushes(getRecentPushes(events));
+      } catch (err) {
+        if (controller.signal.aborted) return;
+        setError(err instanceof Error ? err.message : 'Unknown error while loading GitHub stats');
+        setDays(emptyDays());
+        setTopRepos([]);
+        setRepoCount(0);
+        setRecentPushes(0);
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => controller.abort();
+  }, [username]);
+
+  return {
+    days,
+    topRepos,
+    repoCount,
+    recentPushes,
+    loading,
+    error
+  };
+};
+
 // --- Components ---
 
 const Navbar = () => {
@@ -76,7 +232,7 @@ const ResearchCard = () => {
     >
       <div className="flex items-start justify-between mb-6">
         <div>
-          <div className="text-xs font-mono electric-violet mb-2 uppercase tracking-widest">ArXiv: 2406.02524</div>
+          <div className="text-xs font-mono electric-violet mb-2 uppercase tracking-widest"><a href="https://arxiv.org/abs/2406.02524" target="_blank" rel="noopener noreferrer" className="hover:text-purple-500 transition-colors">ArXiv: 2406.02524</a></div>
           <h3 className="text-3xl font-bold tracking-tight mb-2">CheckEmbed: LLM Verification</h3>
           <p className="text-slate-600 font-medium">Effective Verification of LLM Solutions to Open-Ended Tasks</p>
         </div>
@@ -137,9 +293,23 @@ const ResearchCard = () => {
   );
 };
 
-const GithubPulse = () => {
-  // Mock data for contribution graph
-  const days = Array.from({ length: 52 * 7 }, (_, i) => Math.floor(Math.random() * 5));
+const GithubPulse = ({
+  days,
+  topRepos,
+  loading,
+  error
+}: {
+  days: number[];
+  topRepos: GitHubRepo[];
+  loading: boolean;
+  error: string | null;
+}) => {
+  const highlightedRepos = topRepos.length > 0
+    ? topRepos
+    : [
+        { id: 1, name: 'Frost-CLI', language: 'Rust, Tokio', html_url: 'https://github.com/WSm-77', stargazers_count: 0, pushed_at: '', fork: false },
+        { id: 2, name: 'Loom-Mesh', language: 'Go, gRPC', html_url: 'https://github.com/WSm-77', stargazers_count: 0, pushed_at: '', fork: false }
+      ];
 
   return (
     <div className="glass rounded-2xl p-8 border border-white/40">
@@ -148,7 +318,7 @@ const GithubPulse = () => {
           <Github className="w-6 h-6" />
           <h3 className="text-xl font-bold">Commit Pulse</h3>
         </div>
-        <div className="text-xs font-mono text-slate-400">@WSm-77</div>
+        <div className="text-xs font-mono text-slate-400">{loading ? 'syncing...' : '@WSm-77'}</div>
       </div>
 
       <div className="flex gap-[2px] overflow-x-auto pb-4 scrollbar-hide">
@@ -175,27 +345,30 @@ const GithubPulse = () => {
       </div>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 bg-white/50 rounded-xl border border-white/50 flex items-center justify-between group cursor-pointer hover:bg-white transition-colors">
-          <div className="flex items-center gap-3">
-            <Terminal className="w-5 h-5 electric-violet" />
-            <div>
-              <div className="text-sm font-bold">Frost-CLI</div>
-              <div className="text-xs text-slate-500">Rust, Tokio</div>
+        {highlightedRepos.map((repo, index) => (
+          <a
+            key={repo.id}
+            href={repo.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 bg-white/50 rounded-xl border border-white/50 flex items-center justify-between group cursor-pointer hover:bg-white transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              {index % 2 === 0 ? (
+                <Terminal className="w-5 h-5 electric-violet" />
+              ) : (
+                <Layers className="w-5 h-5 electric-violet" />
+              )}
+              <div>
+                <div className="text-sm font-bold">{repo.name}</div>
+                <div className="text-xs text-slate-500">{repo.language ?? 'Codebase'}</div>
+              </div>
             </div>
-          </div>
-          <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-purple-500 transition-colors" />
-        </div>
-        <div className="p-4 bg-white/50 rounded-xl border border-white/50 flex items-center justify-between group cursor-pointer hover:bg-white transition-colors">
-          <div className="flex items-center gap-3">
-            <Layers className="w-5 h-5 electric-violet" />
-            <div>
-              <div className="text-sm font-bold">Loom-Mesh</div>
-              <div className="text-xs text-slate-500">Go, gRPC</div>
-            </div>
-          </div>
-          <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-purple-500 transition-colors" />
-        </div>
+            <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-purple-500 transition-colors" />
+          </a>
+        ))}
       </div>
+      {error && <div className="mt-3 text-xs text-amber-600">GitHub API limit reached. Showing fallback project cards.</div>}
     </div>
   );
 };
@@ -754,6 +927,7 @@ const ProjectsSection = () => {
 
 export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const github = useGithubStats('WSm-77');
 
   return (
     <div className="min-h-screen font-sans selection:bg-purple-200 selection:text-purple-900">
@@ -767,14 +941,14 @@ export default function App() {
             animate={{ opacity: 1, scale: 1 }}
             className="px-4 py-1.5 rounded-full glass border border-white/60 text-xs font-mono electric-violet uppercase tracking-widest"
           >
-            Active Lab Research 2024
+            AGH student and SPCL Undergraduate Research Assistant @ ETH Zurich
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9]"
+            className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1.05]"
           >
             Engineering Trust <br />
             <span className="electric-violet">in LLMs.</span>
@@ -832,21 +1006,26 @@ export default function App() {
           <div className="space-y-6">
             <h2 className="text-4xl font-bold tracking-tight">Open Source & Engineering</h2>
             <p className="text-slate-600 leading-relaxed">
-              Beyond the lab, I build high-performance systems and tools that streamline the development
-              lifecycle and optimize computational infrastructure.
+              I build across the full stack—from embedded automotive systems and gRPC-based distributed services
+              to responsive web frontends. Balancing production work with research into LLM verification frameworks.
             </p>
             <div className="flex gap-8 pt-4">
               <div>
-                <div className="text-3xl font-bold">14+</div>
+                <div className="text-3xl font-bold">{github.loading ? '...' : github.repoCount}</div>
                 <div className="text-xs font-mono text-slate-400 uppercase tracking-widest">Repositories</div>
               </div>
               <div>
-                <div className="text-3xl font-bold">800+</div>
-                <div className="text-xs font-mono text-slate-400 uppercase tracking-widest">Commits</div>
+                <div className="text-3xl font-bold">{github.loading ? '...' : github.recentPushes}</div>
+                <div className="text-xs font-mono text-slate-400 uppercase tracking-widest">Recent Pushes (90d)</div>
               </div>
             </div>
           </div>
-          <GithubPulse />
+          <GithubPulse
+            days={github.days}
+            topRepos={github.topRepos}
+            loading={github.loading}
+            error={github.error}
+          />
         </div>
       </section>
 
@@ -862,12 +1041,12 @@ export default function App() {
             >
               WS<span className="bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">m</span>
             </motion.div>
-            <p className="text-sm text-slate-500">© 2024 Neural Frost Lab. ArXiv: 2406.02524</p>
+            <p className="text-sm text-slate-500">© 2026 Wiktor Sędzimir</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Github className="w-6 h-6" /></a>
-            <a href="#" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Linkedin className="w-6 h-6" /></a>
-            <a href="#" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Mail className="w-6 h-6" /></a>
+            <a href="https://github.com/WSm-77" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Github className="w-6 h-6" /></a>
+            <a href="https://www.linkedin.com/in/wiktor-s%C4%99dzimir-2799862b4/" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Linkedin className="w-6 h-6" /></a>
+            <a href="mailto:wiktor.sedzimir@gmail.com" className="p-3 glass rounded-xl hover:text-purple-500 transition-colors"><Mail className="w-6 h-6" /></a>
           </div>
         </div>
       </footer>
