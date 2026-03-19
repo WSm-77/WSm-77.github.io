@@ -453,42 +453,48 @@ const ProjectCarousel = () => {
       description: "Word2Vec embedding model architecture and training implemented from scratch using CBOW and negative sampling, built solely with NumPy without relying on ML frameworks.",
       tech: ["Python", "NumPy", "ML"],
       date: "03/2026",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "Manual backpropagation & CBOW gradient optimization"
     },
     {
       title: "Fake Router",
       description: "Simulation of a fake router that broadcasts malicious RIPv2 packets to redirect network traffic. Utilizes Docker containers to demonstrate impact on network security.",
       tech: ["Python", "Scapy", "Docker"],
       date: "01/2026",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "RIPv2 packet crafting via Scapy & Docker network isolation"
     },
     {
       title: "Draw Master",
       description: "A high-performance Discord bot that splits users in a voice channel into teams or randomly selects winners. Built for scalability and low latency.",
       tech: ["Rust", "Serenity", "Shuttle"],
       date: "06/2025",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "Asynchronous event handling & Rust-based concurrency"
     },
     {
       title: "Darwin World",
       description: "An evolutionary simulation project where an evolving world of animals and plants unfolds over time, featuring a custom JavaFX UI for real-time visualization.",
       tech: ["Java", "JavaFX"],
       date: "01/2025",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "JavaFX rendering loop & evolutionary heuristic logic"
     },
     {
       title: "Kirkpatrick Point Location",
       description: "Interactive visualization tool demonstrating the Kirkpatrick point-location algorithm for efficient spatial querying in planar subdivisions.",
       tech: ["Python", "Jupyter", "Algorithms"],
       date: "2024",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "Hierarchical DAG structure for O(log n) point location"
     },
     {
       title: "Space Invaders v1 & v2",
       description: "Retro arcade game implementations following strict Object-Oriented Programming paradigms to ensure modularity and clean code structure.",
       tech: ["Python", "Pygame", "OOP"],
       date: "05/2024",
-      link: "https://github.com/WSm-77"
+      link: "https://github.com/WSm-77",
+      insight: "State pattern implementation for game-loop modularity"
     }
   ];
 
@@ -549,8 +555,8 @@ const ProjectCarousel = () => {
                         </motion.div>
                      </div>
                      <div className="absolute bottom-8 left-8 right-8 p-6 glass rounded-2xl border border-white/40 translate-y-4 opacity-0 group-hover/img:translate-y-0 group-hover/img:opacity-100 transition-all duration-500">
-                        <div className="text-xs font-mono text-slate-400 mb-1">Architecture Overview</div>
-                        <div className="text-sm font-bold">Distributed Node Management System</div>
+                        <div className="text-xs font-mono text-slate-400 mb-1">Technical Insight</div>
+                        <div className="text-sm font-bold">{project.insight}</div>
                      </div>
                   </div>
                 </div>
