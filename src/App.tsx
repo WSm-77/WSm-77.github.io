@@ -566,7 +566,7 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
 
   const handleDownloadResume = () => {
     const link = document.createElement('a');
-    link.href = '/resources/resume.pdf';
+    link.href = 'https://raw.githubusercontent.com/WSm-77/WSm-77.github.io/main/resources/resume.pdf';
     link.download = 'Wiktor_Sedzimir_Resume.pdf';
     document.body.appendChild(link);
     link.click();
