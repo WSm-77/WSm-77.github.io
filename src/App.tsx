@@ -40,7 +40,14 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass h-16 flex items-center justify-between px-6 md:px-12">
       <div className="font-headline font-bold text-xl tracking-tighter">
-        NEURAL<span className="electric-violet">FROST</span>
+                    <motion.div
+              className="text-5xl font-bold tracking-tight text-slate-900"
+              style={{ fontFamily: "'Dancing Script', 'Brush Script MT'" }}
+              whileHover={{ scale: 1.05, rotate: 1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              WS<span className="bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">m</span>
+            </motion.div>
       </div>
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
         <a href="#research" className="hover:text-[#8B5CF6] transition-colors">Research</a>
@@ -847,7 +854,14 @@ export default function App() {
       <footer id="contact" className="py-20 px-6 md:px-12 border-t border-slate-200/50">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="space-y-4 text-center md:text-left">
-            <div className="font-bold text-2xl tracking-tighter">NEURAL<span className="electric-violet">FROST</span></div>
+            <motion.div
+              className="text-5xl font-bold tracking-tight text-slate-900"
+              style={{ fontFamily: "'Dancing Script', 'Brush Script MT'" }}
+              whileHover={{ scale: 1.05, rotate: 1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              WS<span className="bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">m</span>
+            </motion.div>
             <p className="text-sm text-slate-500">© 2024 Neural Frost Lab. ArXiv: 2406.02524</p>
           </div>
           <div className="flex gap-6">
