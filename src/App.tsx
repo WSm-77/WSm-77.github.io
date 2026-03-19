@@ -296,6 +296,64 @@ const NeuralTwin = () => {
 };
 
 const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const experiences = [
+    {
+      title: "Full Stack Developer",
+      company: "Poznaj Góry",
+      period: "09/2025 - Present",
+      bullets: [
+        "Implement and maintain full-stack features for the Poznaj Góry platform.",
+        "Designed and integrated Google OAuth2 authentication flows to improve sign-in reliability and security.",
+        "Built content ingestion scripts to import and validate content, ensuring consistent formatting and database integrity."
+      ],
+      isPrimary: true
+    },
+    {
+      title: "Junior Software Developer",
+      company: "Aptiv",
+      period: "07/2025 - Present",
+      bullets: [
+        "Working on embedded and tooling for automotive systems.",
+        "Utilized gRPC-based services for data exchange between QNX and Linux targets.",
+        "Implemented secure image signing and verification tooling to streamline firmware delivery."
+      ],
+      isPrimary: true
+    },
+    {
+      title: "Frontend Web Developer",
+      company: "Redinn",
+      period: "05/2025 - 08/2025",
+      bullets: [
+        "Implemented a frontend from Figma designs for the company landing page.",
+        "Converted Figma assets to responsive HTML/CSS with TailwindCSS and the Astro framework."
+      ],
+      isPrimary: false
+    },
+    {
+      title: "Software Intern (C++)",
+      company: "Aptiv",
+      period: "07/2024 - 10/2024",
+      bullets: [
+        "Focused on automotive software development and tooling.",
+        "Fixed functional bugs across control modules.",
+        "Developed a Bash utility to detect unused components in the codebase, reducing build size and maintenance overhead.",
+        "Wrote unit tests for modified applications."
+      ],
+      isPrimary: false
+    },
+    {
+      title: "Software Intern (C++)",
+      company: "Aptiv",
+      period: "06/2023 - 10/2023",
+      bullets: [
+        "Focused on safety-relevant components and test infrastructure.",
+        "Implemented a checksum component for partition-integrity verification.",
+        "Refactored outdated Google Test unit tests and updated the CMake build system."
+      ],
+      isPrimary: false
+    }
+  ];
+
   const handleDownloadResume = () => {
     const link = document.createElement('a');
     link.href = '/resources/resume.pdf';
@@ -373,18 +431,21 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                     <Cpu className="w-5 h-5 electric-violet" /> Experience
                   </h3>
                   <div className="space-y-6">
-                    <div className="relative pl-6 border-l-2 border-purple-100">
-                      <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-purple-500 border-4 border-white" />
-                      <div className="text-sm font-bold">Full Stack Developer</div>
-                      <div className="text-xs text-slate-500 mb-2">Poznaj Góry • 2025 - Present</div>
-                      <p className="text-xs text-slate-600">Designed and integrated Google OAuth2 authentication flows. Built content ingestion scripts for database integrity.</p>
-                    </div>
-                    <div className="relative pl-6 border-l-2 border-purple-100">
-                      <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-purple-200 border-4 border-white" />
-                      <div className="text-sm font-bold">Junior Software Developer</div>
-                      <div className="text-xs text-slate-500 mb-2">Aptiv • 2025 - Present</div>
-                      <p className="text-xs text-slate-600">Utilized gRPC-based services for data exchange. Implemented secure image signing and verification tooling.</p>
-                    </div>
+                    {experiences.map((exp, idx) => (
+                      <div key={idx} className="relative pl-6 border-l-2 border-purple-100">
+                        <div className={cn(
+                          "absolute left-[-9px] top-0 w-4 h-4 rounded-full border-4 border-white",
+                          exp.isPrimary ? "bg-purple-500" : "bg-purple-200"
+                        )} />
+                        <div className="text-sm font-bold">{exp.title}</div>
+                        <div className="text-xs text-slate-500 mb-2">{exp.company} • {exp.period}</div>
+                        <ul className="text-xs text-slate-600 space-y-1 list-disc list-inside">
+                          {exp.bullets.map((bullet, bulletIdx) => (
+                            <li key={bulletIdx}>{bullet}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </section>
 
