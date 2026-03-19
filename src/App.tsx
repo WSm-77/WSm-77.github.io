@@ -10,6 +10,7 @@ import {
   Linkedin, 
   Mail, 
   ExternalLink, 
+  ChevronLeft,
   ChevronRight, 
   ChevronDown, 
   Download, 
@@ -67,8 +68,8 @@ const ResearchCard = () => {
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="text-xs font-mono electric-violet mb-2 uppercase tracking-widest">ArXiv: 2406.02524</div>
-          <h3 className="text-3xl font-bold tracking-tight mb-2">CheckEmbed: Embedding Verification</h3>
-          <p className="text-slate-600 font-medium">Collaboration with ETH Zurich</p>
+          <h3 className="text-3xl font-bold tracking-tight mb-2">CheckEmbed: LLM Verification</h3>
+          <p className="text-slate-600 font-medium">Effective Verification of LLM Solutions to Open-Ended Tasks</p>
         </div>
         <div className="p-3 bg-purple-100 rounded-xl">
           <ShieldCheck className="w-8 h-8 electric-violet" />
@@ -76,8 +77,8 @@ const ResearchCard = () => {
       </div>
 
       <p className="text-slate-700 leading-relaxed mb-6">
-        CheckEmbed is a novel verification framework for high-dimensional embedding spaces, 
-        ensuring neural network consistency across distribution shifts.
+        CheckEmbed (CE) is a simple, scalable and accurate verification method that uses LLM answers reduced 
+        to single embedding vectors for fast, semantically rich comparisons at the whole-answer level.
       </p>
 
       <button 
@@ -100,22 +101,23 @@ const ResearchCard = () => {
               <div>
                 <h4 className="font-bold text-slate-900 mb-2">Abstract</h4>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  We present a framework for detecting hallucinations in Large Language Models by analyzing 
-                  the geometric properties of text embeddings. By measuring cosine similarity and latent 
-                  drift, we can formally verify the reliability of model outputs in real-time.
+                  We introduce CheckEmbed, a verification framework that overcomes the limitations of token-level 
+                  methods by performing whole-answer level comparisons. Using modern embedding LLMs, CE reliably 
+                  detects hallucinations in complex tasks like summarization and knowledge extraction, 
+                  generalizing across text and vision modalities.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
-                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tech Stack</h5>
-                  <div className="flex gap-3">
-                    <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-slate-200">Python</span>
-                    <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-slate-200">PyTorch</span>
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Core Models</h5>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[10px] font-mono bg-white px-2 py-1 rounded border border-slate-200">SFR-Embedding-Mistral</span>
+                    <span className="text-[10px] font-mono bg-white px-2 py-1 rounded border border-slate-200">e5-mistral-7b-instruct</span>
                   </div>
                 </div>
                 <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
-                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Metrics</h5>
-                  <div className="text-sm font-bold text-slate-900">98.4% Robustness Score</div>
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Performance</h5>
+                  <div className="text-sm font-bold text-slate-900">Whole-Answer Granularity</div>
                 </div>
               </div>
             </div>
@@ -206,7 +208,7 @@ const NeuralTwin = () => {
     
     // Mock AI response
     setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', text: "Wiktor is currently focused on embedding verification at ETH Zurich. His CheckEmbed framework has achieved a 98.4% robustness score." }]);
+      setMessages(prev => [...prev, { role: 'ai', text: "Wiktor's CheckEmbed framework performs whole-answer level verification using modern embedding LLMs. It's designed to detect hallucinations in complex open-ended tasks with high scalability." }]);
       setIsTyping(false);
     }, 1500);
   };
@@ -350,8 +352,8 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                   </h3>
                   <p className="text-slate-600 text-sm leading-relaxed">
                     Full Stack Developer and AI/ML Researcher with a focus on neural robustness and interpretability. 
-                    Currently developing the CheckEmbed framework in cooperation with ETH Zurich to detect LLM hallucinations 
-                    using geometric embedding analysis.
+                    Currently developing the CheckEmbed framework to enable effective verification of LLM solutions 
+                    to open-ended tasks using whole-answer embedding analysis.
                   </p>
                 </section>
 
@@ -443,6 +445,135 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ title, description, tech, dat
   );
 };
 
+const ProjectCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselProjects = [
+    {
+      title: "Frost-CLI",
+      description: "A high-performance command-line interface built in Rust for managing and monitoring distributed neural network experiments with real-time telemetry and resource allocation.",
+      tech: ["Rust", "Tokio", "Serde"],
+      date: "2025",
+      link: "https://github.com/WSm-77"
+    },
+    {
+      title: "Loom-Mesh",
+      description: "A lightweight, gRPC-based service mesh designed for low-latency communication between microservices in a distributed AI inference cluster, featuring automatic service discovery.",
+      tech: ["Go", "gRPC", "Protobuf"],
+      date: "2024",
+      link: "https://github.com/WSm-77"
+    },
+    {
+      title: "Neural-Viz",
+      description: "An interactive 3D visualization tool for exploring high-dimensional embedding spaces and understanding model decision boundaries through dimensionality reduction techniques.",
+      tech: ["TypeScript", "Three.js", "D3.js"],
+      date: "2024",
+      link: "https://github.com/WSm-77"
+    }
+  ];
+
+  const next = () => setCurrentIndex((prev) => (prev + 1) % carouselProjects.length);
+  const prev = () => setCurrentIndex((prev) => (prev - 1 + carouselProjects.length) % carouselProjects.length);
+
+  return (
+    <div className="relative mt-20">
+      <div className="text-center mb-12">
+        <h2 className="text-xs font-mono electric-violet uppercase tracking-[0.3em] mb-4">Extended Portfolio</h2>
+        <h3 className="text-3xl font-bold tracking-tight">Additional Projects</h3>
+      </div>
+      
+      <div className="relative group">
+        <div className="overflow-hidden rounded-[2.5rem] glass border border-white/60 p-1 shadow-2xl shadow-purple-500/5">
+          <motion.div 
+            className="flex"
+            animate={{ x: `-${currentIndex * 100}%` }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          >
+            {carouselProjects.map((project, index) => (
+              <div key={index} className="min-w-full p-8 md:p-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-8">
+                    <div className="inline-block px-3 py-1 rounded-full bg-purple-50 text-[10px] font-mono electric-violet uppercase tracking-widest border border-purple-100">
+                      {project.date}
+                    </div>
+                    <h3 className="text-4xl font-bold tracking-tight leading-tight">{project.title}</h3>
+                    <p className="text-slate-600 text-lg leading-relaxed">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {project.tech.map(t => (
+                        <span key={t} className="px-4 py-1.5 bg-white/80 rounded-xl text-xs font-semibold border border-slate-100 text-slate-700 shadow-sm">{t}</span>
+                      ))}
+                    </div>
+                    <div className="pt-4">
+                      <a 
+                        href={project.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-slate-900/10"
+                      >
+                        Explore Repository <Github className="w-4 h-4" />
+                      </a>
+                    </div>
+                  </div>
+                  <div className="hidden lg:block aspect-square lg:aspect-video bg-gradient-to-br from-purple-500/5 to-indigo-600/5 rounded-3xl border border-white/80 relative overflow-hidden group/img">
+                     <div className="absolute inset-0 flex items-center justify-center">
+                        <motion.div
+                          animate={{ 
+                            rotate: [0, 10, -10, 0],
+                            scale: [1, 1.05, 0.95, 1]
+                          }}
+                          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                        >
+                          <Terminal className="w-32 h-32 text-purple-200/50" />
+                        </motion.div>
+                     </div>
+                     <div className="absolute bottom-8 left-8 right-8 p-6 glass rounded-2xl border border-white/40 translate-y-4 opacity-0 group-hover/img:translate-y-0 group-hover/img:opacity-100 transition-all duration-500">
+                        <div className="text-xs font-mono text-slate-400 mb-1">Architecture Overview</div>
+                        <div className="text-sm font-bold">Distributed Node Management System</div>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-8 z-10">
+          <button 
+            onClick={prev}
+            className="p-4 glass rounded-full hover:bg-white transition-all border border-white/80 shadow-xl hover:scale-110 active:scale-95 group"
+          >
+            <ChevronLeft className="w-6 h-6 text-slate-400 group-hover:text-purple-500 transition-colors" />
+          </button>
+        </div>
+        <div className="absolute top-1/2 -translate-y-1/2 -right-4 md:-right-8 z-10">
+          <button 
+            onClick={next}
+            className="p-4 glass rounded-full hover:bg-white transition-all border border-white/80 shadow-xl hover:scale-110 active:scale-95 group"
+          >
+            <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-purple-500 transition-colors" />
+          </button>
+        </div>
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="flex justify-center gap-3 mt-12">
+        {carouselProjects.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            className={cn(
+              "w-2.5 h-2.5 rounded-full transition-all duration-300",
+              currentIndex === i ? "bg-purple-500 w-8" : "bg-slate-200 hover:bg-slate-300"
+            )}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const ProjectsSection = () => {
   const projects = [
     {
@@ -513,6 +644,8 @@ const ProjectsSection = () => {
           />
         ))}
       </div>
+
+      <ProjectCarousel />
     </section>
   );
 };
