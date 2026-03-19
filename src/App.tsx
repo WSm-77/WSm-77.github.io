@@ -22,7 +22,9 @@ import {
   Code2,
   Terminal,
   Layers,
-  FileText
+  FileText,
+  Brain,
+  Binary
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -407,37 +409,35 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
   );
 };
 
-interface ProjectCardProps {
+interface SkillCardProps {
   title: string;
+  icon: React.ReactNode;
+  skills: string[];
   description: string;
-  tech: string[];
-  date: string;
-  link: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ title, description, tech, date, link }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ title, icon, skills, description }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
-      className="glass p-6 rounded-2xl border border-white/40 flex flex-col h-full group"
+      className="glass p-8 rounded-2xl border border-white/40 flex flex-col h-full group"
     >
-      <div className="flex justify-between items-start mb-4">
-        <div className="text-[10px] font-mono electric-violet uppercase tracking-widest">{date}</div>
-        <a href={link} target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-purple-500 transition-colors">
-          <Github className="w-5 h-5" />
-        </a>
+      <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-6 group-hover:bg-purple-100 transition-colors">
+        <div className="electric-violet">
+          {icon}
+        </div>
       </div>
       <h3 className="text-xl font-bold mb-3 group-hover:electric-violet transition-colors">{title}</h3>
-      <p className="text-sm text-slate-600 leading-relaxed mb-6 flex-grow">
+      <p className="text-sm text-slate-600 leading-relaxed mb-6">
         {description}
       </p>
-      <div className="flex flex-wrap gap-2">
-        {tech.map(t => (
-          <span key={t} className="text-[10px] font-mono bg-white/50 px-2 py-1 rounded border border-slate-100 text-slate-500">
-            {t}
+      <div className="flex flex-wrap gap-2 mt-auto">
+        {skills.map(s => (
+          <span key={s} className="text-[10px] font-mono bg-white/50 px-2 py-1 rounded border border-slate-100 text-slate-500">
+            {s}
           </span>
         ))}
       </div>
@@ -602,48 +602,42 @@ const ProjectCarousel = () => {
 };
 
 const ProjectsSection = () => {
-  const projects = [
+  const skills = [
     {
-      title: "Word2Vec in pure NumPy",
-      description: "Word2Vec embedding model architecture and training implemented from scratch using CBOW and negative sampling, built solely with NumPy without relying on ML frameworks.",
-      tech: ["Python", "NumPy", "ML"],
-      date: "03/2026",
-      link: "https://github.com/WSm-77"
+      title: "Programming Languages",
+      icon: <Code2 className="w-6 h-6" />,
+      description: "Proficient in multiple paradigms, with a focus on high-performance and type-safe systems.",
+      skills: ["Python", "Rust", "Java", "Go", "TypeScript", "C++"]
     },
     {
-      title: "Fake Router",
-      description: "Simulation of a fake router that broadcasts malicious RIPv2 packets to redirect network traffic. Utilizes Docker containers to demonstrate impact on network security.",
-      tech: ["Python", "Scapy", "Docker"],
-      date: "01/2026",
-      link: "https://github.com/WSm-77"
+      title: "AI & Machine Learning",
+      icon: <Brain className="w-6 h-6" />,
+      description: "Specializing in LLM verification frameworks and high-dimensional embedding space research.",
+      skills: ["LLM Verification", "NumPy", "PyTorch", "Embedding Models", "Neural Networks"]
     },
     {
-      title: "Draw Master",
-      description: "A high-performance Discord bot that splits users in a voice channel into teams or randomly selects winners. Built for scalability and low latency.",
-      tech: ["Rust", "Serenity", "Shuttle"],
-      date: "06/2025",
-      link: "https://github.com/WSm-77"
+      title: "Systems & Networking",
+      icon: <Cpu className="w-6 h-6" />,
+      description: "Experience in building low-latency distributed systems and network security simulations.",
+      skills: ["gRPC", "Scapy", "Docker", "Tokio", "Microservices", "Distributed Systems"]
     },
     {
-      title: "Darwin World",
-      description: "An evolutionary simulation project where an evolving world of animals and plants unfolds over time, featuring a custom JavaFX UI for real-time visualization.",
-      tech: ["Java", "JavaFX"],
-      date: "01/2025",
-      link: "https://github.com/WSm-77"
+      title: "Software Engineering",
+      icon: <Layers className="w-6 h-6" />,
+      description: "Applying rigorous OOP principles and scalable architecture patterns to complex software projects.",
+      skills: ["OOP Design", "Scalable Architecture", "CI/CD", "Git", "Linux", "Shuttle"]
     },
     {
-      title: "Kirkpatrick Point Location",
-      description: "Interactive visualization tool demonstrating the Kirkpatrick point-location algorithm for efficient spatial querying in planar subdivisions.",
-      tech: ["Python", "Jupyter", "Algorithms"],
-      date: "2024",
-      link: "https://github.com/WSm-77"
+      title: "Algorithms & Research",
+      icon: <Binary className="w-6 h-6" />,
+      description: "Implementing complex computational geometry and evolutionary algorithms for research applications.",
+      skills: ["Spatial Querying", "Kirkpatrick Algorithm", "Evolutionary Simulation", "Heuristics"]
     },
     {
-      title: "Space Invaders v1 & v2",
-      description: "Retro arcade game implementations following strict Object-Oriented Programming paradigms to ensure modularity and clean code structure.",
-      tech: ["Python", "Pygame", "OOP"],
-      date: "05/2024",
-      link: "https://github.com/WSm-77"
+      title: "Tools & Infrastructure",
+      icon: <Terminal className="w-6 h-6" />,
+      description: "Managing development environments and deployment pipelines for robust software delivery.",
+      skills: ["Jupyter", "JavaFX", "Pygame", "Serenity", "Discord API"]
     }
   ];
 
@@ -651,23 +645,22 @@ const ProjectsSection = () => {
     <section id="projects" className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div className="space-y-4">
-          <h2 className="text-xs font-mono electric-violet uppercase tracking-[0.3em]">Engineering Portfolio</h2>
-          <h3 className="text-4xl font-bold tracking-tight">Technical Projects</h3>
+          <h2 className="text-xs font-mono electric-violet uppercase tracking-[0.3em]">Technical Expertise</h2>
+          <h3 className="text-4xl font-bold tracking-tight">Core Competencies</h3>
         </div>
         <p className="text-slate-500 max-w-md text-sm leading-relaxed">
-          A collection of systems, simulations, and algorithms developed to solve complex computational problems.
+          A comprehensive set of technical skills developed through rigorous academic research and complex engineering projects.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {projects.map((project, index) => (
-          <ProjectCard 
+        {skills.map((skill, index) => (
+          <SkillCard 
             key={index} 
-            title={project.title}
-            description={project.description}
-            tech={project.tech}
-            date={project.date}
-            link={project.link}
+            title={skill.title}
+            icon={skill.icon}
+            description={skill.description}
+            skills={skill.skills}
           />
         ))}
       </div>
