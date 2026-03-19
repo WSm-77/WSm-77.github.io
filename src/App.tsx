@@ -526,7 +526,7 @@ const ProjectCarousel = () => {
       description: "Word2Vec embedding model architecture and training implemented from scratch using CBOW and negative sampling, built solely with NumPy without relying on ML frameworks.",
       tech: ["Python", "NumPy", "ML"],
       date: "03/2026",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/word2vec_numpy",
       insight: "Manual backpropagation & CBOW gradient optimization"
     },
     {
@@ -534,7 +534,7 @@ const ProjectCarousel = () => {
       description: "Simulation of a fake router that broadcasts malicious RIPv2 packets to redirect network traffic. Utilizes Docker containers to demonstrate impact on network security.",
       tech: ["Python", "Scapy", "Docker"],
       date: "01/2026",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/scapy_project",
       insight: "RIPv2 packet crafting via Scapy & Docker network isolation"
     },
     {
@@ -542,7 +542,7 @@ const ProjectCarousel = () => {
       description: "A high-performance Discord bot that splits users in a voice channel into teams or randomly selects winners. Built for scalability and low latency.",
       tech: ["Rust", "Serenity", "Shuttle"],
       date: "06/2025",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/DrawMaster",
       insight: "Asynchronous event handling & Rust-based concurrency"
     },
     {
@@ -550,7 +550,7 @@ const ProjectCarousel = () => {
       description: "An evolutionary simulation project where an evolving world of animals and plants unfolds over time, featuring a custom JavaFX UI for real-time visualization.",
       tech: ["Java", "JavaFX"],
       date: "01/2025",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/project_darwin_world",
       insight: "JavaFX rendering loop & evolutionary heuristic logic"
     },
     {
@@ -558,7 +558,7 @@ const ProjectCarousel = () => {
       description: "Interactive visualization tool demonstrating the Kirkpatrick point-location algorithm for efficient spatial querying in planar subdivisions.",
       tech: ["Python", "Jupyter", "Algorithms"],
       date: "2024",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/kirkpatrick_point_location",
       insight: "Hierarchical DAG structure for O(log n) point location"
     },
     {
@@ -566,7 +566,7 @@ const ProjectCarousel = () => {
       description: "Retro arcade game implementations following strict Object-Oriented Programming paradigms to ensure modularity and clean code structure.",
       tech: ["Python", "Pygame", "OOP"],
       date: "05/2024",
-      link: "https://github.com/WSm-77",
+      link: "https://github.com/WSm-77/python_games",
       insight: "State pattern implementation for game-loop modularity"
     }
   ];
