@@ -449,24 +449,45 @@ const ProjectCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselProjects = [
     {
-      title: "Frost-CLI",
-      description: "A high-performance command-line interface built in Rust for managing and monitoring distributed neural network experiments with real-time telemetry and resource allocation.",
-      tech: ["Rust", "Tokio", "Serde"],
-      date: "2025",
+      title: "Word2Vec in pure NumPy",
+      description: "Word2Vec embedding model architecture and training implemented from scratch using CBOW and negative sampling, built solely with NumPy without relying on ML frameworks.",
+      tech: ["Python", "NumPy", "ML"],
+      date: "03/2026",
       link: "https://github.com/WSm-77"
     },
     {
-      title: "Loom-Mesh",
-      description: "A lightweight, gRPC-based service mesh designed for low-latency communication between microservices in a distributed AI inference cluster, featuring automatic service discovery.",
-      tech: ["Go", "gRPC", "Protobuf"],
+      title: "Fake Router",
+      description: "Simulation of a fake router that broadcasts malicious RIPv2 packets to redirect network traffic. Utilizes Docker containers to demonstrate impact on network security.",
+      tech: ["Python", "Scapy", "Docker"],
+      date: "01/2026",
+      link: "https://github.com/WSm-77"
+    },
+    {
+      title: "Draw Master",
+      description: "A high-performance Discord bot that splits users in a voice channel into teams or randomly selects winners. Built for scalability and low latency.",
+      tech: ["Rust", "Serenity", "Shuttle"],
+      date: "06/2025",
+      link: "https://github.com/WSm-77"
+    },
+    {
+      title: "Darwin World",
+      description: "An evolutionary simulation project where an evolving world of animals and plants unfolds over time, featuring a custom JavaFX UI for real-time visualization.",
+      tech: ["Java", "JavaFX"],
+      date: "01/2025",
+      link: "https://github.com/WSm-77"
+    },
+    {
+      title: "Kirkpatrick Point Location",
+      description: "Interactive visualization tool demonstrating the Kirkpatrick point-location algorithm for efficient spatial querying in planar subdivisions.",
+      tech: ["Python", "Jupyter", "Algorithms"],
       date: "2024",
       link: "https://github.com/WSm-77"
     },
     {
-      title: "Neural-Viz",
-      description: "An interactive 3D visualization tool for exploring high-dimensional embedding spaces and understanding model decision boundaries through dimensionality reduction techniques.",
-      tech: ["TypeScript", "Three.js", "D3.js"],
-      date: "2024",
+      title: "Space Invaders v1 & v2",
+      description: "Retro arcade game implementations following strict Object-Oriented Programming paradigms to ensure modularity and clean code structure.",
+      tech: ["Python", "Pygame", "OOP"],
+      date: "05/2024",
       link: "https://github.com/WSm-77"
     }
   ];
