@@ -5,17 +5,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
+import {
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
   ChevronLeft,
-  ChevronRight, 
-  ChevronDown, 
-  Download, 
-  X, 
-  Send, 
+  ChevronRight,
+  ChevronDown,
+  Download,
+  X,
+  Send,
   MessageSquare,
   Cpu,
   ShieldCheck,
@@ -60,7 +60,7 @@ const ResearchCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <motion.div 
+    <motion.div
       layout
       className="glass rounded-2xl p-8 max-w-3xl mx-auto border border-white/40"
       initial={{ opacity: 0, y: 20 }}
@@ -79,11 +79,11 @@ const ResearchCard = () => {
       </div>
 
       <p className="text-slate-700 leading-relaxed mb-6">
-        CheckEmbed (CE) is a simple, scalable and accurate verification method that uses LLM answers reduced 
+        CheckEmbed (CE) is a simple, scalable and accurate verification method that uses LLM answers reduced
         to single embedding vectors for fast, semantically rich comparisons at the whole-answer level.
       </p>
 
-      <button 
+      <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center gap-2 text-sm font-bold electric-violet hover:opacity-80 transition-opacity"
       >
@@ -103,9 +103,9 @@ const ResearchCard = () => {
               <div>
                 <h4 className="font-bold text-slate-900 mb-2">Abstract</h4>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  We introduce CheckEmbed, a verification framework that overcomes the limitations of token-level 
-                  methods by performing whole-answer level comparisons. Using modern embedding LLMs, CE reliably 
-                  detects hallucinations in complex tasks like summarization and knowledge extraction, 
+                  We introduce CheckEmbed, a verification framework that overcomes the limitations of token-level
+                  methods by performing whole-answer level comparisons. Using modern embedding LLMs, CE reliably
+                  detects hallucinations in complex tasks like summarization and knowledge extraction,
                   generalizing across text and vision modalities.
                 </p>
               </div>
@@ -133,7 +133,7 @@ const ResearchCard = () => {
 const GithubPulse = () => {
   // Mock data for contribution graph
   const days = Array.from({ length: 52 * 7 }, (_, i) => Math.floor(Math.random() * 5));
-  
+
   return (
     <div className="glass rounded-2xl p-8 border border-white/40">
       <div className="flex items-center justify-between mb-8">
@@ -143,14 +143,14 @@ const GithubPulse = () => {
         </div>
         <div className="text-xs font-mono text-slate-400">@WSm-77</div>
       </div>
-      
+
       <div className="flex gap-[2px] overflow-x-auto pb-4 scrollbar-hide">
         {Array.from({ length: 52 }).map((_, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-[2px]">
             {Array.from({ length: 7 }).map((_, rowIndex) => {
               const level = days[colIndex * 7 + rowIndex];
               return (
-                <div 
+                <div
                   key={rowIndex}
                   className={cn(
                     "w-3 h-3 rounded-[2px]",
@@ -207,7 +207,7 @@ const NeuralTwin = () => {
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setInput('');
     setIsTyping(true);
-    
+
     // Mock AI response
     setTimeout(() => {
       setMessages(prev => [...prev, { role: 'ai', text: "Wiktor's CheckEmbed framework performs whole-answer level verification using modern embedding LLMs. It's designed to detect hallucinations in complex open-ended tasks with high scalability." }]);
@@ -265,15 +265,15 @@ const NeuralTwin = () => {
 
             <div className="p-4 border-t border-slate-100 bg-white/50">
               <div className="flex gap-2">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask a question..."
                   className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 transition-colors"
                 />
-                <button 
+                <button
                   onClick={handleSend}
                   className="p-2 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors"
                 >
@@ -285,7 +285,7 @@ const NeuralTwin = () => {
         )}
       </AnimatePresence>
 
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-16 h-16 bg-purple-500 text-white rounded-full shadow-xl shadow-purple-500/20 flex items-center justify-center hover:scale-110 transition-transform active:scale-95"
       >
@@ -296,11 +296,20 @@ const NeuralTwin = () => {
 };
 
 const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const handleDownloadResume = () => {
+    const link = document.createElement('a');
+    link.href = '/resources/resume.pdf';
+    link.download = 'Wiktor_Sedzimir_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -353,8 +362,8 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                     <FileText className="w-5 h-5 electric-violet" /> Professional Summary
                   </h3>
                   <p className="text-slate-600 text-sm leading-relaxed">
-                    Full Stack Developer and AI/ML Researcher with a focus on neural robustness and interpretability. 
-                    Currently developing the CheckEmbed framework to enable effective verification of LLM solutions 
+                    Full Stack Developer and AI/ML Researcher with a focus on neural robustness and interpretability.
+                    Currently developing the CheckEmbed framework to enable effective verification of LLM solutions
                     to open-ended tasks using whole-answer embedding analysis.
                   </p>
                 </section>
@@ -392,13 +401,16 @@ const ResumeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
             </div>
 
             <div className="p-6 bg-white/80 border-t border-white/50 flex items-center justify-between">
-              <button 
+              <button
                 onClick={onClose}
                 className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors"
               >
                 Close Overlay
               </button>
-              <button className="flex items-center gap-2 bg-purple-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-600 transition-colors shadow-lg shadow-purple-500/20">
+              <button
+                onClick={handleDownloadResume}
+                className="flex items-center gap-2 bg-purple-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-600 transition-colors shadow-lg shadow-purple-500/20"
+              >
                 <Download className="w-4 h-4" /> Download PDF
               </button>
             </div>
@@ -418,7 +430,7 @@ interface SkillCardProps {
 
 const SkillCard: React.FC<SkillCardProps> = ({ title, icon, skills, description }) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -507,10 +519,10 @@ const ProjectCarousel = () => {
         <h2 className="text-xs font-mono electric-violet uppercase tracking-[0.3em] mb-4">Extended Portfolio</h2>
         <h3 className="text-3xl font-bold tracking-tight">Additional Projects</h3>
       </div>
-      
+
       <div className="relative group">
         <div className="overflow-hidden rounded-[2.5rem] glass border border-white/60 p-1 shadow-2xl shadow-purple-500/5">
-          <motion.div 
+          <motion.div
             className="flex"
             animate={{ x: `-${currentIndex * 100}%` }}
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
@@ -532,9 +544,9 @@ const ProjectCarousel = () => {
                       ))}
                     </div>
                     <div className="pt-4">
-                      <a 
-                        href={project.link} 
-                        target="_blank" 
+                      <a
+                        href={project.link}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-3 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-slate-900/10"
                       >
@@ -545,7 +557,7 @@ const ProjectCarousel = () => {
                   <div className="hidden lg:block aspect-square lg:aspect-video bg-gradient-to-br from-purple-500/5 to-indigo-600/5 rounded-3xl border border-white/80 relative overflow-hidden group/img">
                      <div className="absolute inset-0 flex items-center justify-center">
                         <motion.div
-                          animate={{ 
+                          animate={{
                             rotate: [0, 10, -10, 0],
                             scale: [1, 1.05, 0.95, 1]
                           }}
@@ -567,7 +579,7 @@ const ProjectCarousel = () => {
 
         {/* Navigation Buttons */}
         <div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-8 z-10">
-          <button 
+          <button
             onClick={prev}
             className="p-4 glass rounded-full hover:bg-white transition-all border border-white/80 shadow-xl hover:scale-110 active:scale-95 group"
           >
@@ -575,7 +587,7 @@ const ProjectCarousel = () => {
           </button>
         </div>
         <div className="absolute top-1/2 -translate-y-1/2 -right-4 md:-right-8 z-10">
-          <button 
+          <button
             onClick={next}
             className="p-4 glass rounded-full hover:bg-white transition-all border border-white/80 shadow-xl hover:scale-110 active:scale-95 group"
           >
@@ -655,8 +667,8 @@ const ProjectsSection = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {skills.map((skill, index) => (
-          <SkillCard 
-            key={index} 
+          <SkillCard
+            key={index}
             title={skill.title}
             icon={skill.icon}
             description={skill.description}
@@ -678,7 +690,7 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans selection:bg-purple-200 selection:text-purple-900">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="pt-40 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col items-center text-center space-y-8">
@@ -689,8 +701,8 @@ export default function App() {
           >
             Active Lab Research 2024
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -699,32 +711,32 @@ export default function App() {
             Engineering Trust <br />
             <span className="electric-violet">in LLMs.</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="max-w-2xl text-lg md:text-xl text-slate-600 leading-relaxed"
           >
-            Engineering neural robustness and interpretability through the lens of ethical computation. 
+            Engineering neural robustness and interpretability through the lens of ethical computation.
             Currently focusing on embedding verification at <span className="font-bold text-slate-900">ETH Zurich</span>.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="flex flex-wrap items-center justify-center gap-4 pt-4"
           >
-            <button 
+            <button
               onClick={() => setIsResumeOpen(true)}
               className="px-8 py-4 bg-purple-500 text-white rounded-2xl font-bold shadow-xl shadow-purple-500/20 hover:scale-105 transition-transform active:scale-95"
             >
               Open Resume
             </button>
-            <a 
-              href="https://github.com/WSm-77" 
-              target="_blank" 
+            <a
+              href="https://github.com/WSm-77"
+              target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 glass rounded-2xl font-bold flex items-center gap-2 hover:bg-white/50 transition-colors"
             >
@@ -752,7 +764,7 @@ export default function App() {
           <div className="space-y-6">
             <h2 className="text-4xl font-bold tracking-tight">Open Source & Engineering</h2>
             <p className="text-slate-600 leading-relaxed">
-              Beyond the lab, I build high-performance systems and tools that streamline the development 
+              Beyond the lab, I build high-performance systems and tools that streamline the development
               lifecycle and optimize computational infrastructure.
             </p>
             <div className="flex gap-8 pt-4">
