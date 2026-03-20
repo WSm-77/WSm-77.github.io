@@ -1,20 +1,46 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Wiktor Sędzimir - Portfolio Website
 
-# Run and deploy your AI Studio app
+A modern portfolio website built with React, TypeScript, and Vite showcasing research, projects, and GitHub contribution data.
 
-This contains everything you need to run your app locally.
+**Live Site:** https://wsm-77.github.io
 
-View your app in AI Studio: https://ai.studio/apps/10705c2f-d0fc-4a49-a32e-346b5f734d6b
+## Features
 
-## Run Locally
+- **Research Spotlight:** Featured publication (CheckEmbed: LLM Verification)
+- **Live GitHub Stats:** Dynamic commit graph and repository data
+- **Project Showcase:** Interactive carousel of featured projects
+- **Neural Twin Chatbot:** AI-powered stub assistant for visitor engagement
+- **Resume Modal:** Downloadable resume and professional experience
+- **Responsive Design:** Optimized for desktop and mobile
 
-**Prerequisites:**  Node.js
+## Development
 
+**Prerequisites:** Node.js 20+
+
+### Local Setup
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Start development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open `http://localhost:3000` in your browser
+
+### Build & Deploy
+
+- **Build:** `npm run build` (outputs to `dist/`)
+- **Deploy:** Push to `main` branch to trigger GitHub Actions deployment
+- **Preview:** `npm run preview`
+
+## Tech Stack
+
+- **Frontend:** React 19, TypeScript, Vite
+- **Styling:** Tailwind CSS, Framer Motion
+- **Data:** GitHub REST API (dynamic stats)
+- **Deployment:** GitHub Pages + GitHub Actions
+- **Icons:** Lucide React
